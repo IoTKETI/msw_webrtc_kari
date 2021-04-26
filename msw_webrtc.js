@@ -10,12 +10,17 @@ var my_msw_name = 'msw_webrtc';
 
 var fc = {};
 var config = {};
+var input_argv = {};
 
 pase_argv();
 
 function pase_argv(){
-    input_argv = process.argv;
-    console.log('==========\r\n' + input_argv + '==========\r\n');
+    var argv = process.argv[4].substring(1, process.argv[4].length - 1).split(',');
+    input_argv.host = argv[0].split(':')[1];
+    input_argv.drone = argv[1].split(':')[1];
+    input_argv.gcs = argv[2].split(':')[1];
+    input_argv.type = argv[3].split(':')[1];
+    input_argv.system_id = argv[4].split(':')[1];
 }
 
 try {                                   // for nCube-MUV (NodeJs)
@@ -38,8 +43,8 @@ try {
     catch (e) {     // for nCube-MUV-Python
         config.directory_name = process.argv[3];
         config.sortie_name = '/' + sortie_name;
-        config.gcs = process.argv[4];
-        config.drone = process.argv[5];
+        config.gcs = input_argv.gcs;
+        config.drone = input_argv.drone;
         config.lib = [];
     }
 }
@@ -58,12 +63,12 @@ try {
 }
 catch (e) {
     add_lib = {
-        name: 'lib_sparrow_gun',
+        name: 'lib_webrtc',
         target: 'armv6',
-        description: "[name] [portnum] [baudrate]",
-        scripts: './lib_sparrow_gun /dev/ttyUSB3 9600',
-        data: ['GUN'],
-        control: ['MICRO']
+        description: "[name] [host] [drone] [room]",
+        scripts: './lib_webrtc 203.253.128.177 Dev_Tool_Test 250',
+        data: [],
+        control: []
     };
     config.lib.push(add_lib);
 }
@@ -104,7 +109,13 @@ function init() {
                     }
                 }
 
+                console.log(input_argv);
+                if (input_argv.hasOwnProperty("system_id")) {
+                    config.lib[idx].system_id = input_argv.system_id;
+                }
+
                 var obj_lib = config.lib[idx];
+
                 setTimeout(runLib, 1000 + parseInt(Math.random()*10), JSON.parse(JSON.stringify(obj_lib)));
             }
         }
@@ -123,6 +134,7 @@ function runLib(obj_lib) {
         }
 
         var run_lib = spawn(scripts_arr[0], scripts_arr.slice(1));
+        // var run_lib = spawn('python3', ['../lib_webrtc/lib_webrtc.py', '203.253.128.177', 'Dev_Tool_Test', '250']);
 
         run_lib.stdout.on('data', function(data) {
             console.log('stdout: ' + data);
@@ -224,12 +236,6 @@ function msw_mqtt_connect(broker_ip, port) {
     });
 }
 
-function req_status() {
-    console.log('send req');
-    msw_mqtt_client.publish('/MUV/data/' + config.lib[0].name + '/' + config.lib[0].data + 'req', "1");
-    setTimeout(req_status, 1000);
-}
-
 function on_receive_from_muv(topic, str_message) {
     console.log('[' + topic + '] ' + str_message);
 
@@ -250,7 +256,6 @@ function on_process_fc_data(topic, str_message) {
 }
 
 setTimeout(init, 1000);
-req_status();
 
 function parseDataMission(topic, str_message) {
     try {
@@ -306,3 +311,5 @@ function parseFcData(topic, str_message) {
     // }
     ///////////////////////////////////////////////////////////////////////
 }
+
+
