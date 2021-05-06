@@ -89,6 +89,8 @@ def control_web(driver):
     time.sleep(2)
 
     if (session_id is not None) and (handle_id is not None):
+        print(type(argv[3]))
+        print(argv[3])
         room_number = int(argv[3])
         rsc, res_body = crt_room(session_id, handle_id, room_number)
     else:
@@ -118,6 +120,7 @@ def crt_room(session_id, handle_id, room_number):
     # global session_id
     # global handle_id
     global argv
+    print(argv[1])
 
     url = "http://" + argv[1] + ":8088/janus"
 
