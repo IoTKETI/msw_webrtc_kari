@@ -102,8 +102,8 @@ def control_web(driver):
     time.sleep(2)
 
     Room_Number = driver.find_element_by_id('roomnumber')
+    print(Room_Number)
     Room_Number.send_keys(room_number)
-
     username_id = driver.find_element_by_id('username')
     username_id.send_keys(display_name)
     username_id.send_keys(Keys.RETURN)
@@ -111,7 +111,17 @@ def control_web(driver):
     # register_id = driver.find_element_by_id('register')
     # register_id.click()
     while True:
-        pass
+        try:
+            if driver.find_element_by_id('publish'):
+                publish_btn = driver.find_element_by_id('publish')
+                publish_btn.click()
+            else:
+                pass
+        except Exception as e:
+            print(e)
+            pass
+
+        # pass
         # time.sleep(10)
         # get_participants()
 
