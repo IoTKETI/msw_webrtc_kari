@@ -32,7 +32,8 @@ catch (e) {
 setTimeout(runLib, 1000, config.lib)
 function runLib(obj_lib) {
     try {
-        var run_lib = spawn('python3', ['lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        // var run_lib = spawn('python3', ['lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        var run_lib = spawn('pwd');
 
 
         run_lib.stdout.on('data', function(data) {
