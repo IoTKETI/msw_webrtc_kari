@@ -65,7 +65,7 @@ let msw_mqtt_client = null;
 
 msw_mqtt_connect(config.lib[0].host, 1883);
 
-let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + config.name + '/STATUS'
+let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/STATUS'
 
 console.log(webrtc_status_topic);
 function msw_mqtt_connect(broker_ip, port) {
