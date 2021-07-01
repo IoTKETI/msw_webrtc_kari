@@ -18,7 +18,7 @@ config.lib = [];
 // library 추가
 let add_lib = {};
 try {
-    add_lib = JSON.parse(fs.readFileSync('./' + config.name + '_' + config.name + '/webrtc_conf.json', 'utf8'));
+    add_lib = JSON.parse(fs.readFileSync('./webrtc_conf.json', 'utf8'));
     config.lib.push(add_lib);
 }
 catch (e) {
@@ -35,8 +35,8 @@ catch (e) {
 
 function runLib(obj_lib) {
     try {
-        console.log('python3', ' ', './' + obj_lib.directory_name + '/lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid);
-        let run_lib = spawn('python3', ['./' + obj_lib.directory_name + '/lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        console.log('python3', ' ', './lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid);
+        let run_lib = spawn('python3', ['/lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
 
         run_lib.stdout.on('data', function(data) {
             console.log('stdout: ' + data);
