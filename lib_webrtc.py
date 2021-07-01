@@ -108,8 +108,10 @@ def control_web(driver):
     username_id.send_keys(display_name)
     username_id.send_keys(Keys.RETURN)
 
-    # register_id = driver.find_element_by_id('register')
-    # register_id.click()
+    wait = WebDriverWait(driver, 10)
+    element = wait.until(EC.element_to_be_clickable((By.ID, 'unpublish')))
+    button_id = driver.find_element_by_id('unpublish')
+    button_id.click()
     while True:
         try:
             if driver.find_element_by_id('publish'):
