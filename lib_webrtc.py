@@ -110,8 +110,8 @@ def control_web(driver):
 
     wait = WebDriverWait(driver, 10)
     element = wait.until(EC.element_to_be_clickable((By.ID, 'unpublish')))
-    button_id = driver.find_element_by_id('unpublish')
-    button_id.click()
+#     button_id = driver.find_element_by_id('unpublish')
+    element.click()
     while True:
         try:
             if driver.find_element_by_id('publish'):
