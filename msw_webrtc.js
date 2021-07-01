@@ -36,7 +36,7 @@ catch (e) {
 function runLib(obj_lib) {
     try {
         console.log('python3', ' ', './lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid);
-        let run_lib = spawn('python3', ['/lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        let run_lib = spawn('python3', ['./lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
 
         run_lib.stdout.on('data', function(data) {
             console.log('stdout: ' + data);
