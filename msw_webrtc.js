@@ -60,4 +60,4 @@ function runLib(obj_lib) {
     }
 }
 
-setTimeout(runLib, 1000, config.lib[0]);
+setTimeout(runLib, 20000, config.lib[0]);
