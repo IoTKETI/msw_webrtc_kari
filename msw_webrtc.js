@@ -9,7 +9,6 @@ let spawn = require('child_process').spawn;
 
 let my_msw_name = 'msw_webrtc';
 
-let fc = {};
 let config = {};
 
 config.name = my_msw_name;
@@ -33,11 +32,13 @@ catch (e) {
     config.lib.push(add_lib);
 }
 
+let run_lib;
+
 function runLib(obj_lib) {
     try {
         console.log('python3', ' ', './lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid);
-        let run_lib = spawn('python3', ['./lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
-
+        run_lib = spawn('python', ['./lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        console.log(run_lib.pid);
         run_lib.stdout.on('data', function(data) {
             console.log('stdout: ' + data);
         });
@@ -48,8 +49,12 @@ function runLib(obj_lib) {
 
         run_lib.on('exit', function(code) {
             console.log('exit: ' + code);
-
-            setTimeout(runLib, 3000, obj_lib);
+            if (code === null) {
+                console.log('code is null');
+                run_lib.kill();
+            } else {
+                setTimeout(runLib, 3000, obj_lib);
+            }
         });
 
         run_lib.on('error', function(code) {
@@ -69,7 +74,7 @@ let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + co
 
 console.log(webrtc_status_topic);
 function msw_mqtt_connect(broker_ip, port) {
-    if(msw_mqtt_client == null) {
+    if(msw_mqtt_client === null) {
         let connectOptions = {
             host: broker_ip,
             port: port,
@@ -88,7 +93,7 @@ function msw_mqtt_connect(broker_ip, port) {
 
     msw_mqtt_client.on('connect', function () {
         console.log('[msw_mqtt_connect] connected to ' + broker_ip);
-        if(webrtc_status_topic != '') {
+        if(webrtc_status_topic !== '') {
             msw_mqtt_client.subscribe(webrtc_status_topic, function () {
                 console.log('[webrtc_mqtt_connect] webrtc_status_topic is subscribed: ' + webrtc_status_topic);
             });
@@ -96,13 +101,14 @@ function msw_mqtt_connect(broker_ip, port) {
     });
 
     msw_mqtt_client.on('message', function (topic, message) {
-        if(topic == webrtc_status_topic) {
-            if (message.toString() == 'ON') {
+        if(topic === webrtc_status_topic) {
+            if (message.toString() === 'ON') {
                 setTimeout(runLib, 1000, config.lib[0]);
-                msw_mqtt_client.end();
+            }
+            else if (message.toString() === 'OFF'){
+                run_lib.kill('SIGKILL');
             }
             else {
-                console.log();
             }
         }
     });
