@@ -150,7 +150,7 @@ def crt_room(session_id, handle_id, room_number):
             "is_private": False,
             "bitrate": 512000,
             "fir_freq": 10,
-            "videocodec": "vp9",
+            "videocodec": "h264",
             "video_svc": True
         }
     })
