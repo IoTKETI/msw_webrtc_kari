@@ -51,7 +51,7 @@ function runLib(obj_lib) {
                 console.log('code is null');
                 run_lib.kill();
             } else {
-                setTimeout(runLib, 3000, obj_lib);
+                // setTimeout(runLib, 3000, obj_lib);
             }
         });
 
