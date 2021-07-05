@@ -36,9 +36,7 @@ let run_lib;
 
 function runLib(obj_lib) {
     try {
-        console.log('python3', ' ', './lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid);
-        run_lib = spawn('python', ['./lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
-        console.log(run_lib.pid);
+        run_lib = spawn('python3', ['./lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
         run_lib.stdout.on('data', function(data) {
             console.log('stdout: ' + data);
         });
@@ -102,10 +100,8 @@ function msw_mqtt_connect(broker_ip, port) {
 
     msw_mqtt_client.on('message', function (topic, message) {
         if(topic === webrtc_status_topic) {
-            console.log(message.toString());
             if (message.toString() === 'ON') {
                 setTimeout(runLib, 1000, config.lib[0]);
-                console.log(message.toString());
             }
             else if (message.toString() === 'OFF'){
                 run_lib.kill('SIGKILL');
