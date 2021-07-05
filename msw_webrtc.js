@@ -102,8 +102,10 @@ function msw_mqtt_connect(broker_ip, port) {
 
     msw_mqtt_client.on('message', function (topic, message) {
         if(topic === webrtc_status_topic) {
+            console.log(message.toString());
             if (message.toString() === 'ON') {
                 setTimeout(runLib, 1000, config.lib[0]);
+                console.log(message.toString());
             }
             else if (message.toString() === 'OFF'){
                 run_lib.kill('SIGKILL');
