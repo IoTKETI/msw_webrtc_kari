@@ -35,7 +35,7 @@ let run_lib;
 
 function runLib(obj_lib) {
     try {
-        run_lib = spawn('./' + directory_name + '/lib_webrtc', [obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        run_lib = spawn('./lib_webrtc', [obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
         run_lib.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
         });
@@ -66,7 +66,7 @@ let msw_mqtt_client = null;
 
 msw_mqtt_connect(config.lib[0].host, 1883);
 
-let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/STATUS'
+let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/STATUS';
 
 console.log(webrtc_status_topic);
 
@@ -113,5 +113,55 @@ function msw_mqtt_connect(broker_ip, port) {
     });
     msw_mqtt_client.on('end', function () {
         console.log('msw_mqtt_connect CLOSE..');
+    });
+}
+
+let local_msw_mqtt_client = null;
+
+local_msw_mqtt_connect('localhost', 1883);
+
+function local_msw_mqtt_connect(broker_ip, port) {
+    if (local_msw_mqtt_client == null) {
+        let connectOptions = {
+            host: broker_ip,
+            port: port,
+//              username: 'keti',
+//              password: 'keti123',
+            protocol: "mqtt",
+            keepalive: 10,
+//              clientId: serverUID,
+            protocolId: "MQTT",
+            protocolVersion: 4,
+            clean: true,
+            reconnectPeriod: 2000,
+            connectTimeout: 2000,
+            rejectUnauthorized: false
+        };
+
+        local_msw_mqtt_client = mqtt.connect(connectOptions);
+    }
+
+    local_msw_mqtt_client.on('connect', function () {
+        console.log('[local_msw_mqtt_connect] connected to ' + broker_ip);
+        if (webrtc_status_topic !== '') {
+            local_msw_mqtt_client.subscribe(webrtc_status_topic, function () {
+                console.log('[webrtc_mqtt_connect] webrtc_status_topic is subscribed: ' + webrtc_status_topic);
+            });
+        }
+    });
+
+    local_msw_mqtt_client.on('message', function (topic, message) {
+        if (topic === webrtc_status_topic) {
+            if (message.toString() === 'ON') {
+                setTimeout(runLib, 1000, config.lib[0]);
+            } else if (message.toString() === 'OFF') {
+                run_lib.kill('SIGKILL');
+            } else {
+            }
+        }
+    });
+
+    local_msw_mqtt_client.on('error', function (err) {
+        console.log(err.message);
     });
 }
