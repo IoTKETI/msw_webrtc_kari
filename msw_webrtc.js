@@ -19,8 +19,7 @@ let add_lib = {};
 try {
     add_lib = JSON.parse(fs.readFileSync('./webrtc_conf.json', 'utf8'));
     config.lib.push(add_lib);
-}
-catch (e) {
+} catch (e) {
     add_lib = {
         gcs: 'KETI_MUV',
         drone: 'KETI_Demo',
@@ -36,16 +35,16 @@ let run_lib;
 
 function runLib(obj_lib) {
     try {
-        run_lib = spawn('python3', ['./lib_webrtc.py', obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
-        run_lib.stdout.on('data', function(data) {
+        run_lib = spawn('./lib_webrtc.py', [obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        run_lib.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
         });
 
-        run_lib.stderr.on('data', function(data) {
+        run_lib.stderr.on('data', function (data) {
             console.log('stderr: ' + data);
         });
 
-        run_lib.on('exit', function(code) {
+        run_lib.on('exit', function (code) {
             console.log('exit: ' + code);
             if (code === null) {
                 console.log('code is null');
@@ -55,11 +54,10 @@ function runLib(obj_lib) {
             }
         });
 
-        run_lib.on('error', function(code) {
+        run_lib.on('error', function (code) {
             console.log('error: ' + code);
         });
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e.message);
     }
 }
@@ -71,8 +69,9 @@ msw_mqtt_connect(config.lib[0].host, 1883);
 let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/STATUS'
 
 console.log(webrtc_status_topic);
+
 function msw_mqtt_connect(broker_ip, port) {
-    if(msw_mqtt_client === null) {
+    if (msw_mqtt_client === null) {
         let connectOptions = {
             host: broker_ip,
             port: port,
@@ -91,7 +90,7 @@ function msw_mqtt_connect(broker_ip, port) {
 
     msw_mqtt_client.on('connect', function () {
         console.log('[msw_mqtt_connect] connected to ' + broker_ip);
-        if(webrtc_status_topic !== '') {
+        if (webrtc_status_topic !== '') {
             msw_mqtt_client.subscribe(webrtc_status_topic, function () {
                 console.log('[webrtc_mqtt_connect] webrtc_status_topic is subscribed: ' + webrtc_status_topic);
             });
@@ -99,14 +98,12 @@ function msw_mqtt_connect(broker_ip, port) {
     });
 
     msw_mqtt_client.on('message', function (topic, message) {
-        if(topic === webrtc_status_topic) {
+        if (topic === webrtc_status_topic) {
             if (message.toString() === 'ON') {
                 setTimeout(runLib, 1000, config.lib[0]);
-            }
-            else if (message.toString() === 'OFF'){
+            } else if (message.toString() === 'OFF') {
                 run_lib.kill('SIGKILL');
-            }
-            else {
+            } else {
             }
         }
     });
