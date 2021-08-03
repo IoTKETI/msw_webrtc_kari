@@ -35,7 +35,7 @@ let run_lib;
 
 function runLib(obj_lib) {
     try {
-        run_lib = spawn('./lib_webrtc.py', [obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
+        run_lib = spawn('./' + directory_name + '/lib_webrtc', [obj_lib.host, obj_lib.display_name, obj_lib.thismav_sysid]);
         run_lib.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
         });
