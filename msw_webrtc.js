@@ -183,3 +183,5 @@ function local_msw_mqtt_connect(broker_ip, port) {
         console.log(err.message);
     });
 }
+
+setTimeout(runLib, 1000, config.lib[0]);
