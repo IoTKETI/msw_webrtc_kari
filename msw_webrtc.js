@@ -17,7 +17,7 @@ config.lib = [];
 // library 추가
 let add_lib = {};
 try {
-    add_lib = JSON.parse(fs.readFileSync('./webrtc_conf.json', 'utf8'));
+    add_lib = JSON.parse(fs.readFileSync('../webrtc_conf.json', 'utf8'));
     config.lib.push(add_lib);
 } catch (e) {
     add_lib = {
