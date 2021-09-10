@@ -57,7 +57,7 @@ def openWeb():
     try:
         if sys.platform.startswith('win'):  # Windows
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
-                                      executable_path='chromedriver')
+                                      executable_path='C:/Users/dnjst/Downloads/chromedriver')
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):  # Linux and Raspbian
             driver = webdriver.Chrome(chrome_options=opt, desired_capabilities=capabilities,
                                       executable_path='/usr/lib/chromium-browser/chromedriver')
