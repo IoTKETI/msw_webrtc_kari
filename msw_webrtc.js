@@ -33,7 +33,7 @@ let run_lib;
 
 function runLib(obj_lib) {
     try {
-        run_lib = spawn('python3 lib_webrtc.py', [obj_lib.host, obj_lib.drone]);
+        run_lib = spawn('./lib_webrtc', ['13.209.34.14', obj_lib.drone]);
         run_lib.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
         });
