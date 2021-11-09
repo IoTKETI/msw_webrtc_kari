@@ -60,128 +60,101 @@ function runLib(obj_lib) {
     }
 }
 
-// let msw_mqtt_client = null;
-//
-// msw_mqtt_connect(config.lib[0].host, 1883);
-//
-// let webrtc_status_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/STATUS';
-// let webrtc_control_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/Control';
-// let lib_control_topic = '/MUV/control/lib_webrtc/Control';
-//
-// function msw_mqtt_connect(broker_ip, port) {
-//     if (msw_mqtt_client === null) {
-//         let connectOptions = {
-//             host: broker_ip,
-//             port: port,
-//             protocol: "mqtt",
-//             keepalive: 10,
-//             protocolId: "MQTT",
-//             protocolVersion: 4,
-//             clean: true,
-//             reconnectPeriod: 2000,
-//             connectTimeout: 2000,
-//             rejectUnauthorized: false
-//         };
-//
-//         msw_mqtt_client = mqtt.connect(connectOptions);
-//     }
-//
-//     msw_mqtt_client.on('connect', function () {
-//         console.log('[msw_mqtt_connect] connected to ' + broker_ip);
-//
-//         if (webrtc_status_topic !== '') {
-//             msw_mqtt_client.subscribe(webrtc_status_topic, function () {
-//                 console.log('[webrtc_mqtt_connect] webrtc_status_topic is subscribed: ' + webrtc_status_topic);
-//             });
-//         }
-//
-//         if (webrtc_control_topic !== '') {
-//             msw_mqtt_client.subscribe(webrtc_control_topic, function () {
-//                 console.log('[webrtc_mqtt_connect] webrtc_control_topic is subscribed: ' + webrtc_control_topic);
-//             });
-//         }
-//     });
-//
-//     msw_mqtt_client.on('message', function (topic, message) {
-//         if (topic === webrtc_status_topic) {
-//             if (message.toString() === 'ON') {
-//                 setTimeout(runLib, 1000, config.lib[0]);
-//             } else if (message.toString() === 'OFF') {
-//                 run_lib.kill('SIGKILL');
-//             } else {
-//             }
-//         } else if (topic === webrtc_control_topic) {
-//             console.log('[MQTT]Send ' + message.toString() + ' to ' + lib_control_topic);
-//             local_msw_mqtt_client.publish(lib_control_topic, message.toString());
-//         }
-//     });
-//
-//     msw_mqtt_client.on('error', function (err) {
-//         console.log(err.message);
-//     });
-//     msw_mqtt_client.on('end', function () {
-//         console.log('msw_mqtt_connect CLOSE..');
-//     });
-// }
-//
-// let local_msw_mqtt_client = null;
-//
-// local_msw_mqtt_connect('localhost', 1883);
-//
-// function local_msw_mqtt_connect(broker_ip, port) {
-//     if (local_msw_mqtt_client == null) {
-//         let connectOptions = {
-//             host: broker_ip,
-//             port: port,
-// //              username: 'keti',
-// //              password: 'keti123',
-//             protocol: "mqtt",
-//             keepalive: 10,
-// //              clientId: serverUID,
-//             protocolId: "MQTT",
-//             protocolVersion: 4,
-//             clean: true,
-//             reconnectPeriod: 2000,
-//             connectTimeout: 2000,
-//             rejectUnauthorized: false
-//         };
-//
-//         local_msw_mqtt_client = mqtt.connect(connectOptions);
-//     }
-//
-//     local_msw_mqtt_client.on('connect', function () {
-//         console.log('[local_msw_mqtt_connect] connected to ' + broker_ip);
-//
-//         if (webrtc_status_topic !== '') {
-//             local_msw_mqtt_client.subscribe(webrtc_status_topic, function () {
-//                 console.log('[local_msw_mqtt_connect] webrtc_status_topic is subscribed: ' + webrtc_status_topic);
-//             });
-//         }
-//
-//         if (webrtc_control_topic !== '') {
-//             local_msw_mqtt_client.subscribe(webrtc_control_topic, function () {
-//                 console.log('[local_msw_mqtt_connect] webrtc_control_topic is subscribed: ' + webrtc_control_topic);
-//             });
-//         }
-//     });
-//
-//     local_msw_mqtt_client.on('message', function (topic, message) {
-//         if (topic === webrtc_status_topic) {
-//             if (message.toString() === 'ON') {
-//                 setTimeout(runLib, 1000, config.lib[0]);
-//             } else if (message.toString() === 'OFF') {
-//                 run_lib.kill('SIGKILL');
-//             } else {
-//             }
-//         } else if (topic === webrtc_control_topic) {
-//             console.log('[HTTP]Send ' + message.toString() + ' to ' + lib_control_topic + '');
-//             local_msw_mqtt_client.publish(lib_control_topic, message.toString());
-//         }
-//     });
-//
-//     local_msw_mqtt_client.on('error', function (err) {
-//         console.log(err.message);
-//     });
-// }
+let msw_mqtt_client = null;
+
+msw_mqtt_connect(config.lib[0].host, 1883);
+
+let webrtc_control_topic = '/Mobius/' + config.lib[0].gcs + '/Mission_Data/' + config.lib[0].drone + '/' + config.name + '/Control';
+let lib_control_topic = '/MUV/control/lib_webrtc/Control';
+
+function msw_mqtt_connect(broker_ip, port) {
+    if (msw_mqtt_client === null) {
+        let connectOptions = {
+            host: broker_ip,
+            port: port,
+            protocol: "mqtt",
+            keepalive: 10,
+            protocolId: "MQTT",
+            protocolVersion: 4,
+            clean: true,
+            reconnectPeriod: 2000,
+            connectTimeout: 2000,
+            rejectUnauthorized: false
+        };
+
+        msw_mqtt_client = mqtt.connect(connectOptions);
+    }
+
+    msw_mqtt_client.on('connect', function () {
+        console.log('[msw_mqtt_connect] connected to ' + broker_ip);
+
+        if (webrtc_control_topic !== '') {
+            msw_mqtt_client.subscribe(webrtc_control_topic, function () {
+                console.log('[webrtc_mqtt_connect] webrtc_control_topic is subscribed: ' + webrtc_control_topic);
+            });
+        }
+    });
+
+    msw_mqtt_client.on('message', function (topic, message) {
+        if (topic === webrtc_control_topic) {
+            console.log('[MQTT]Send ' + message.toString() + ' to ' + lib_control_topic);
+            local_msw_mqtt_client.publish(lib_control_topic, message.toString());
+        }
+    });
+
+    msw_mqtt_client.on('error', function (err) {
+        console.log(err.message);
+    });
+    msw_mqtt_client.on('end', function () {
+        console.log('msw_mqtt_connect CLOSE..');
+    });
+}
+
+let local_msw_mqtt_client = null;
+
+local_msw_mqtt_connect('localhost', 1883);
+
+function local_msw_mqtt_connect(broker_ip, port) {
+    if (local_msw_mqtt_client == null) {
+        let connectOptions = {
+            host: broker_ip,
+            port: port,
+//              username: 'keti',
+//              password: 'keti123',
+            protocol: "mqtt",
+            keepalive: 10,
+//              clientId: serverUID,
+            protocolId: "MQTT",
+            protocolVersion: 4,
+            clean: true,
+            reconnectPeriod: 2000,
+            connectTimeout: 2000,
+            rejectUnauthorized: false
+        };
+
+        local_msw_mqtt_client = mqtt.connect(connectOptions);
+    }
+
+    local_msw_mqtt_client.on('connect', function () {
+        console.log('[local_msw_mqtt_connect] connected to ' + broker_ip);
+
+        if (webrtc_control_topic !== '') {
+            local_msw_mqtt_client.subscribe(webrtc_control_topic, function () {
+                console.log('[local_msw_mqtt_connect] webrtc_control_topic is subscribed: ' + webrtc_control_topic);
+            });
+        }
+    });
+
+    local_msw_mqtt_client.on('message', function (topic, message) {
+        if (topic === webrtc_control_topic) {
+            console.log('[HTTP]Send ' + message.toString() + ' to ' + lib_control_topic + '');
+            local_msw_mqtt_client.publish(lib_control_topic, message.toString());
+        }
+    });
+
+    local_msw_mqtt_client.on('error', function (err) {
+        console.log(err.message);
+    });
+}
 
 setTimeout(runLib, 1000, config.lib[0]);
