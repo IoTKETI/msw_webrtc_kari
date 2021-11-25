@@ -33,7 +33,7 @@ let run_lib;
 
 function runLib(obj_lib) {
     try {
-        run_lib = spawn('./lib_webrtc', ['webrtc.iotocean.org:7598', obj_lib.drone]);
+        run_lib = spawn('./lib_webrtc', ['webrtc.intellicode.info', obj_lib.drone]);
         run_lib.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
         });
