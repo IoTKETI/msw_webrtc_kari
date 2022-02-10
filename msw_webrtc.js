@@ -93,6 +93,7 @@ function runLib(obj_lib) {
 
         } else {
             scripts_arr[0] = scripts_arr[0].replace('./', '');
+            scripts_arr[0] = './' + scripts_arr[0];
         }
         let run_lib = null;
 
