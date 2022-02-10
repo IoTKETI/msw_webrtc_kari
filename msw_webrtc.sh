@@ -1,3 +1,3 @@
 #!/usr/bin/sh
 
-node msw_webrtc.js
+pm2 msw_webrtc.js
