@@ -19,7 +19,7 @@ config.name = my_msw_name;
 global.drone_info = '';
 
 try {
-    drone_info = JSON.parse(fs.readFileSync('../drone_info.json', 'utf8'));
+    drone_info = JSON.parse(fs.readFileSync('./drone_info.json', 'utf8'));
 
     config.directory_name = my_msw_name + '_' + my_msw_name;
     // config.sortie_name = '/' + sortie_name;
@@ -165,7 +165,7 @@ function msw_mqtt_connect(broker_ip, port) {
 
                 let cinObj = jsonObj.pc['m2m:sgn'].nev.rep['m2m:cin']
                 let patharr = jsonObj.pc['m2m:sgn'].sur.split('/');
-                let lib_ctl_topic = '/MUV/control/' + patharr[patharr.length - 2].replace('msw_', 'lib_') + '/' + patharr[patharr.length - 1];
+                let lib_ctl_topic = '/MUV/control/' + patharr[patharr.length - 3].replace('msw_', 'lib_') + '/' + patharr[patharr.length - 2];
 
                 if (getType(cinObj.con) == 'string') {
                     local_msw_mqtt_client.publish(lib_ctl_topic, cinObj.con);
@@ -265,7 +265,8 @@ function parseDataMission(topic, str_message) {
         let data_topic = '/Mobius/' + config.gcs + '/Mission_Data/' + config.drone + '/' + config.name + '/' + topic_arr[topic_arr.length - 1];
         msw_mqtt_client.publish(data_topic, str_message);
         sh_man.crtci(data_topic + '?rcn=0', 0, str_message, null, function (rsc, res_body, parent, socket) {
-        });    } catch (e) {
+        });
+    } catch (e) {
         console.log('[parseDataMission] data format of lib is not json');
     }
 }
