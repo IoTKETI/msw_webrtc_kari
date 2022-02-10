@@ -8,6 +8,7 @@ let fs = require('fs');
 let spawn = require('child_process').spawn;
 const {nanoid} = require('nanoid');
 const util = require("util");
+let os = require('os');
 
 global.sh_man = require('./http_man');
 
@@ -93,8 +94,15 @@ function runLib(obj_lib) {
         } else {
             scripts_arr[0] = scripts_arr[0].replace('./', '');
         }
+        let run_lib = null;
 
-        let run_lib = spawn(scripts_arr[0], [scripts_arr[1], drone_info.drone]);
+        if (os.release().includes('v7l')) {
+            run_lib = spawn(scripts_arr[0], [scripts_arr[1], drone_info.drone]);
+        } else if (os.release().includes('tegra')) {
+            run_lib = spawn(scripts_arr[0] + '_nx', [scripts_arr[1], drone_info.drone]);
+        } else {
+            run_lib = spawn(scripts_arr[0], [scripts_arr[1], drone_info.drone]);
+        }
 
         run_lib.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
