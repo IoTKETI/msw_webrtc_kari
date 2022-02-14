@@ -45,7 +45,7 @@ try {
         name: 'lib_webrtc',
         target: 'armv6',
         description: '[name] [WebRTCpath]',
-        scripts: './lib_webrtc webrtc.iotocean.org:7598',
+        scripts: './lib_webrtc gcs.iotocean.org:7598',
         data: [],
         control: ['STATUS']
     };
