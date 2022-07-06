@@ -1,4 +1,4 @@
-# msw_webrtc
+# msw_webrtc_kari
 
 ***
 This repository was developed using WebRTC and a video capture board to stream video from the drone.
